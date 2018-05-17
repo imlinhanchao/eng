@@ -22,7 +22,7 @@
 .layout-logo{
     justify-content: flex-start;
     align-content: center; 
-    border-radius: 3px;
+    margin: 5px auto;
     float: left;
     background-size: 100%;
     display: flex;

@@ -29,6 +29,7 @@
         "js-cookie": "^2.1.3",
         "jsdom": "^11.2.0",
         "less-middleware": "~2.2.0",
+        "lodash": "^4.17.10",
         "morgan": "~1.8.1",
         "request": "^2.81.0",
         "request-promise": "^4.2.1",

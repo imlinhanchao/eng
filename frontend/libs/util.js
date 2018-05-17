@@ -5,7 +5,7 @@ let util = {
 
 };
 util.title = function(title) {
-    title = title ? title + ' - 我的会议室' : '我的会议室';
+    title = title ? title + ' - 自考英语查询' : '自考英语查询';
     window.document.title = title;
 };
 

@@ -355,7 +355,7 @@ class App {
                     obj + (customizeTip ? '' : (exist ? '已存在！' : '不存在！'))
                 );
             },
-            param: new AppError(2, '参数错误！'),
+            param: new AppError(2, '查询条件无效！'),
             query: new AppError(3, '无效查询条件！'),
             db: function (err) {
                 return new AppError(
