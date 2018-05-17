@@ -1,0 +1,43 @@
+@import '~iview/src/styles/index.less';
+
+// Here are the variables to cover, such as:
+//@primary-color: #3d3b4f;
+
+html, body {
+    min-height: 100%;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    background: #f5f7f9;
+    min-height: 100%;
+}
+.ivu-table-cell {
+    overflow: unset;
+}
+.ivu-layout-sider-zero-width-trigger {
+    position: fixed;
+    top: 15px;
+    left: 200px;
+    right: auto;
+    transition: all 0.2s ease-in-out;
+}
+
+.ivu-layout-sider-collapsed .ivu-layout-sider-zero-width-trigger {
+    left: 0px;
+}
+
+.ivu-menu-item {
+    a {
+        display: block;
+    }
+}
+
+a {
+    color: inherit;
+}
+
+.ivu-menu-horizontal.ivu-menu-light:after {
+    background: transparent;
+}

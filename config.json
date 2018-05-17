@@ -1,0 +1,17 @@
+{
+    "base": {
+        "upload": "/public/upload/",
+        "fileurl": "upload/",
+        "port": 7803,
+        "domain": "http://localhost:3200",
+        "cookie_domain": "eng.hancel.org",
+        "suffix": ".htm",
+        "identityKey": "_ENG_SESSION_ID_ZaE24dWa3KhFx5",
+        "secret": "v3VFUWGyVH4Uc"
+    },
+    "error": {
+    },
+    "web": {
+        "name": "自考英语查询"
+    }
+}
