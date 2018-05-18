@@ -3,7 +3,7 @@
         "upload": "/public/upload/",
         "fileurl": "upload/",
         "port": 7803,
-        "domain": "http://localhost:7803",
+        "domain": "http://eng.hancel.org",
         "cookie_domain": "eng.hancel.org",
         "suffix": ".htm",
         "identityKey": "_ENG_SESSION_ID_ZaE24dWa3KhFx5",

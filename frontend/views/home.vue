@@ -1,16 +1,6 @@
 <template>
     <Layout class="home">
         <Layout>
-            <!-- <Select
-                id="search"
-                placeholder="搜索"
-                v-model="word"
-                filterable
-                remote
-                :remote-method="inputWord"
-                :loading="loading">
-                <Option v-for="(option, index) in words" :value="option" :key="index">{{option}}</Option>
-            </Select> -->
             <Input v-model="word" name="word" placeholder="搜索" id="search" v-on:keyup.13="query">
                 <Button slot="append" icon="ios-search" @click="query"></Button>
                 <ul slot="append" class="input-tip" v-show="words.length > 0">
@@ -19,15 +9,21 @@
             </Input>
         </Layout>
         <Layout v-show="dict.word">
-            <h1>{{dict.word}}</h1>
-            <p>
+            <h1 class="dict-word">
+                {{dict.word}}
+            </h1>
+            <section>
+                <span class="dict-tip" v-if="!dict.isSelf" style="background:red">非自考词汇</span>
+                <span class="dict-tip" v-if="dict.isSelf">第{{page}}页 第{{index}}个</span>
+            </section>
+            <p v-if="dict.pronunciation">
                 [{{dict.pronunciation.AmE}}]
                 <Button size="large" type="text" icon="volume-medium" @click="playSound(0)" class="sound-btn"></Button>
                 <audio :src="dict.pronunciation.AmEmp3" class="sound" id="sound0"></audio>
             </p>
             <h2 class="sub-title">释义</h2>            
             <p>
-                <ul class="def-list">
+                <ul class="def-list" v-if="dict.defs">
                     <li v-for="(def, index) in dict.defs" :key="index">
                         <span class="def-type">{{def.pos}}</span> 
                         <span class="def-mean">{{def.def}}</span>
@@ -35,7 +31,7 @@
                 </ul>
             </p>
             <h2 class="sub-title">例句</h2>
-            <section class="sam-section" v-for="(sam, index) in dict.sams" :key="index">
+            <section class="sam-section" v-if="dict.sams" v-for="(sam, index) in dict.sams" :key="index">
                 <p class="sam-eng">
                     <span>{{sam.eng}}</span>
                     <Button size="large" type="text" icon="volume-medium" @click="playSound(index+1)" class="sound-btn"></Button>
@@ -43,6 +39,15 @@
                 </p>
                 <p class="sam-chn">{{sam.chn}}</p>
             </section>
+        </Layout>
+        <Layout>
+            <h2 class="sub-title">使用方法</h2>
+            <p class="help">
+                <ol>
+                    <li>你可以通过输入『页码 序号』查询自考英语二 附录二中指定页码指定序号单词。如：39 2</li>
+                    <li>你可以通过单词查询，输入过程会提示自考英语二 附录二中单词，点击提示可以直达。</li>
+                </ol>
+            </p>
         </Layout>
     </Layout>
 </template>
@@ -54,6 +59,20 @@
         },
         mounted() {
             this.debouncedInputWord = debounce(this.inputWord, 500)
+        },
+        computed: {
+            page() {
+                let i = this.dict.index;
+                if (i < 0) return 0;
+                if (i < 70) return 1;
+                return (i - 70) / 80 + 1;
+            },
+            index() {
+                let i = this.dict.index;
+                if (i < 0) return 0;
+                if (i < 70) return i + 1;
+                return (i - 70) % 80 + 1;
+            }
         },
         watch: {
             word: function (newQuestion, oldQuestion) {
@@ -123,10 +142,11 @@
                 word: '',
                 words: [],
                 loading: false,
-                debouncedInputWord: null,   
+                debouncedInputWord: null,
                 dict: {
                     word: '',
                     isSelf: false,
+                    index: -1,
                     pronunciation: {
                         AmE: '',
                         AmEmp3: ''
@@ -139,6 +159,19 @@
     };
 </script>
 <style lang="less">
+.dict-word {
+    font-size: 3em;
+    font-weight: 500;
+    margin: .2em 0 0;
+}
+.dict-tip {
+    font-size: 1em;
+    margin: 0;
+    background: #4fcefe;
+    padding: 0 .5em;
+    color: #f8f8f9;
+    font-weight: 400;
+}
 #search {
     max-width: 300px;
     margin: auto;
@@ -170,6 +203,9 @@
     &:focus {
         box-shadow: none;
     }
+    width: 2em;
+    height: 2em;
+    padding: 0;
 }
 .def-list {
     list-style: none;
@@ -189,6 +225,10 @@ h2.sub-title {
   border-bottom: 1px solid #000;
 }
 
+.help {
+  margin: .5em;
+}
+
 .sam-section {
     margin:.5em 0;
     padding-bottom:.8em;
@@ -198,7 +238,8 @@ h2.sub-title {
         border-bottom: 0;
     }
     .sam-eng {
-        font-weight:600;
+        font-weight: 400;
     }
 }
+
 </style>
