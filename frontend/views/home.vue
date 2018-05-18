@@ -64,8 +64,8 @@
             page() {
                 let i = this.dict.index;
                 if (i < 0) return 0;
-                if (i < 70) return 1;
-                return (i - 70) / 80 + 1;
+                if (i < 70) return 39;
+                return parseInt((i - 70) / 80) + 38;
             },
             index() {
                 let i = this.dict.index;
