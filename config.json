@@ -7,7 +7,8 @@
         "cookie_domain": "eng.hancel.org",
         "suffix": ".htm",
         "identityKey": "_ENG_SESSION_ID_ZaE24dWa3KhFx5",
-        "secret": "v3VFUWGyVH4Uc"
+        "secret": "v3VFUWGyVH4Uc",
+        "salt": "6ef1c161-0e57-4b63-b5af-4ba01d7f67f8"
     },
     "error": {
     },
