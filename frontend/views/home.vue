@@ -40,7 +40,7 @@
                 <p class="sam-chn">{{sam.chn}}</p>
             </section>
         </Layout>
-        <Layout>
+        <Layout v-show="!dict.word">
             <h2 class="sub-title">使用方法</h2>
             <p class="help">
                 <ol>
