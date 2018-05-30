@@ -1,6 +1,6 @@
 const req = require('../lib/req');
 const App = require('./app');
-const Words = require('./word')
+const Words = require('./word');
 
 let __error__ = Object.assign({}, App.error);
 __error__.notexisted = App.error.existed('单词', false);
@@ -41,7 +41,7 @@ class Module extends App {
                     if (data[1].charAt(0) == '-') {
                         data[1] = data[0].slice(0, 1 - data[1].length) + data[1].slice(1);
                     }
-                    if (data[1].trim() == word) index = i;;
+                    if (data[1].trim() == word) index = i;
                 }
             }
             let dict = await this.dict(word);
