@@ -10,12 +10,15 @@ __error__.verify = App.error.reg('帐号或密码错误！');
 __error__.exist = App.error.existed('帐号');
 
 class Module extends App {
-    constructor() {
+    constructor(session) {
         super([
             { fun: App.ok, name: 'oklogin', msg: '登录成功' },
             { fun: App.ok, name: 'oklogout', msg: '登出成功' },
             { fun: App.ok, name: 'okget', msg: '获取成功' },
         ]);
+        this.session = session;
+        this.name = '用户';
+        this.saftKey = Account.keys().filter(k => ['passwd'].indexOf(k) < 0);
     }
 
     get error() {
@@ -23,7 +26,7 @@ class Module extends App {
     }
     
     async login(data) {
-        const keys = ['user', 'passwd'];
+        const keys = ['username', 'passwd'];
 
         if (!App.haskeys(data, keys)) {
             throw (this.error.param);
@@ -32,19 +35,19 @@ class Module extends App {
         data = App.filter(data, keys);
 
         try {
-            let account = await this.exist(data, false);
+            let account = await this.exist(data.username, false);
             if(!account) {
-                this.create(data, false);
-            }
-
-            let sha256 = crypto.createHash('sha256');
-            let passwd = sha256.update(data.passwd + __salt).digest('hex');
-            if (account.passwd != passwd) {
-                throw this.error.verify;
+                account = await this.create(data, false);
+            } else {
+                let sha256 = crypto.createHash('sha256');
+                let passwd = sha256.update(data.passwd + __salt).digest('hex');
+                if (account.passwd != passwd) {
+                    throw this.error.verify;
+                }
             }
 
             this.session.account_login = account;
-            return this.oklogin(this.session.account_login);
+            return this.oklogin(App.filter(this.session.account_login, this.saftKey));
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.network(err));
@@ -52,18 +55,27 @@ class Module extends App {
     }
 
     async create(data, bJson = true) {
+        const keys = ['username', 'passwd'];
+
+        if (!App.haskeys(data, keys)) {
+            throw (this.error.param);
+        }
+
+        data = App.filter(data, Account.keys());
+        
         try {
-            let account = await this.exist(data, false);
+            let account = await this.exist(data.username, false);
             if (account) {
                 throw (this.error.existed);
             }
             
             data.nickname = data.username;
+            data.lastlogin = new Date().valueOf() / 1000;
             let sha256 = crypto.createHash('sha256');
             data.passwd = sha256.update(data.passwd + __salt).digest('hex');
-            account = await super.create(data, Account);
+            account = await super.new(data, Account);
             if (!bJson) return account;
-            return this.okcreate(account);
+            return this.okcreate(App.filter(account, this.saftKey));
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
@@ -71,6 +83,14 @@ class Module extends App {
     }
 
     async update(data) {
+        const keys = ['username'];
+
+        if (!App.haskeys(data, keys)) {
+            throw (this.error.param);
+        }
+
+        data = App.filter(data, Account.keys());
+
         try {
             // 用户名不可更改
             let account = this.info(false);
@@ -78,10 +98,12 @@ class Module extends App {
                 throw this.error.limited;
             }
             data.username = undefined;
-            let sha256 = crypto.createHash('sha256');
-            let passwd = sha256.update(data.oldpasswd + __salt).digest('hex');
-            if (account.passwd != passwd) {
-                throw this.error.verify;
+            if (account.passwd) {
+                let sha256 = crypto.createHash('sha256');
+                let passwd = sha256.update(data.oldpasswd + __salt).digest('hex');
+                if (account.passwd != passwd) {
+                    throw this.error.verify;
+                }
             }
             return this.okupdate(await super.set(data, Account));
         } catch (err) {
@@ -94,7 +116,7 @@ class Module extends App {
         try {
             let data = await Account.findOne({
                 where: {
-                    username: data.username
+                    username: username
                 }
             });
             if (!bJson) return data;
@@ -122,7 +144,7 @@ class Module extends App {
             throw (this.error.nologin);
         }
         if (!bJson) return this.session.account_login;
-        return this.okget(this.session.account_login);
+        return this.okget(App.filter(this.session.account_login, this.saftKey));
     }
 }
 

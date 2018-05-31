@@ -1,7 +1,7 @@
 <template>
     <Layout class="home">
         <Layout>
-            <Input v-model="word" name="word" placeholder="搜索" id="search" v-on:keyup.13="query">
+            <Input v-model="word" name="word" placeholder="搜索" id="search" on-enter="query">
                 <Button slot="append" icon="ios-search" @click="query"></Button>
                 <ul slot="append" class="input-tip" v-show="words.length > 0">
                     <li v-for="(w, index) in words" :key="index" @click="selectWord(w)">{{w}}</li>

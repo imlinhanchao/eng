@@ -5,7 +5,7 @@ let orm = {
         type: db.STRING(20),
         comment: '登录帐号'
     },
-    nikename: {
+    nickname: {
         type: db.STRING(20),
         comment: '昵称'
     },

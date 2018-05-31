@@ -5,6 +5,7 @@ let loader = require('./loader');
 
 //router.use(require('./access'));
 router.use('/eng', loader(modules.eng));
+router.use('/account', loader(modules.account));
 
 router.get('/', function (req, res) {
     res.render('index', { title: 'API' });

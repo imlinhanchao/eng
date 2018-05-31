@@ -21,10 +21,7 @@ const routers = [{
     ]
     }, {
         path: '*',
-        meta: {
-            title: '找不到页面'
-        },
-        component: (resolve) => require(['./views/404.vue'], resolve)
+        redirect: '/'
     }
 ];
 export default routers;

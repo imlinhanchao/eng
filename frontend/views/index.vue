@@ -59,7 +59,17 @@
     color: #fff;
     padding: 10px 24px;
     font-size: 2em;
-    line-height: 2em;
+    line-height: 1em;
+    flex-direction: row;
+    display: flex;
+    height: auto;
+    i {
+        flex: 0 0 1em;
+        vertical-align: middle
+    }
+    span {
+        word-break: break-all
+    }
 }
 .menu-item {
     position: relative;
@@ -110,8 +120,8 @@
     <Layout class="layout">
         <Sider :class="'layout-sidebar'" default-collapsed breakpoint="xl" collapsible :collapsed-width="0" v-model="isCollapsed">
             <Header class="layout-user" v-if="isLogin">
-                <Icon type="person"></Icon>
-                <span>{{name}}</span>
+                <!-- <Icon type="person"></Icon> -->
+                <span>{{loginUser.nickname}}</span>
             </Header>
             <Menu active-name="1-1" theme="dark" width="auto" :class="menuitemClasses">
                 <MenuItem name="1-1" v-if="isLogin">
@@ -225,7 +235,24 @@
                 this.$router.push(`/new`);
             },
             loginSubmit() {
-
+                //this.login_loading = true;
+                this.$axios.post(`/api/account/login`, this.login)
+                .then((rsp) => {
+                    rsp = rsp.data;
+                    this.login_loading = false;
+                    if (rsp.state == 0) {
+                        this.login_loading = false;
+                        this.loginUser = rsp.data;
+                        this.loginModel = false;
+                    } else {
+                        this.$Message.error(error.message);
+                        console.error(error.message);
+                    }
+                })
+                .catch((error) => {
+                    this.$Message.error(error.message);
+                    console.error(error.message);
+                });
             }
         }
     }
