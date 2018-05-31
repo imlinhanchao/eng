@@ -6,7 +6,7 @@ let orm = {
         comment: '创建者'
     },
     content: {
-        type: db.text,
+        type: db.TEXT,
         comment: '笔记'
     },
     word: {
