@@ -5,9 +5,11 @@ function loader(Module) {
     var express = require('express');
     var router = express.Router();
     router.all('/:fn*', function (req, res, next) {
-        let fn = req.params.fn;
-        if (Module.cache && Module.cache[fn]) {
-            res.header('Cache-Control', `public,max-age=${Module.cache[fn]}`);
+        if (process.env.NODE_ENV === 'development') {
+            res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8081');
+            res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE, PUT');
+            res.header('Access-Control-Allow-Credentials', 'true');
+            res.header('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept,X-Requested-With');
         }
         next();
     });

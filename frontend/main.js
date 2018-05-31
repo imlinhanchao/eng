@@ -8,11 +8,13 @@ import App from './app.vue';
 import 'iview/dist/styles/iview.css';
 import './theme/index.less';
 import axios from 'axios';
+
 axios.defaults.withCredentials = true;
+axios.defaults.baseURL = Util.ajaxUrl;
 Vue.prototype.$axios = axios;
+
 Vue.use(VueRouter);
 Vue.use(Vuex);
-
 Vue.use(iView);
 
 
@@ -62,7 +64,6 @@ new Vue({
     beforeMount() {
     },
     methods: {
-
     },
     computed: {
     }
