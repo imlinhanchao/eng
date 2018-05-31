@@ -13,11 +13,22 @@ E. pubilc - 静态资源
 F. routes - 服务路由  
 G. view - 视图   
 
+# 数据库部署说明
+1. 新建数据库`eng`；  
+2. 修改`model`中的`config.json`的数据库链接信息；  
+3. 执行`node scripts/init_db.js`；
+4. 若需要重置某个表，如：重置`account`表，则执行`node scripts/init_db.js account`。
+
+# 调试说明
+1. 执行`npm install`;
+2. 前端执行`npm run dev`，后端使用 Visual Studio Code 运行调试（直接按下`F5`即可）。
+
 ## 部署说明
 服务器需安装`nodejs`和`npm`。部署执行如下脚本：
 ```bash
 npm install
 ```
+
 编译前端代码：  
 ```bash
 npm run build
