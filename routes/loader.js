@@ -6,7 +6,7 @@ function loader(Module) {
     var router = express.Router();
     router.all('/:fn*', function (req, res, next) {
         if (process.env.NODE_ENV === 'development') {
-            res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8081');
+            res.header('Access-Control-Allow-Origin', 'http://localhost:8081');
             res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE, PUT');
             res.header('Access-Control-Allow-Credentials', 'true');
             res.header('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept,X-Requested-With');

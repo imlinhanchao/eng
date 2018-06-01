@@ -38,7 +38,7 @@ app.use(session({
     saveUninitialized: false,
     resave: false,
     cookie: {
-        domain: config.base.cookie_domain,
+        domain: process.env.NODE_ENV === 'development' ? 'localhost' : config.base.cookie_domain,
         maxAge: 60 * 60 * 24 * 1000 * 365  // 有效期，单位是毫秒
     }
 }));

@@ -78,7 +78,7 @@
 .menu-item span{
     display: inline-block;
     overflow: hidden;
-    width: 69px;
+    width: 70%;
     text-overflow: ellipsis;
     white-space: nowrap;
     vertical-align: bottom;
@@ -137,8 +137,8 @@
                     <span>收藏的笔记</span></router-link>
                 </MenuItem>
                 <MenuItem name="1-4" v-if="isLogin">
-                    <router-link to="/logout"><Icon type="log-out"></Icon>
-                    <span>退出</span></router-link>
+                    <span @click="logoutAccount"><Icon type="log-out"></Icon>
+                    <span>退出</span></span>
                 </MenuItem>
                 <MenuItem name="1-5" v-if="!isLogin">
                     <span @click="loginModel = true"><Icon type="log-in"></Icon>
@@ -164,7 +164,7 @@
         </Layout>
         <Modal v-model="loginModel" title="登录" width="300">
             <Form ref="loginForm" :model="login" :rules="ruleValidate" class="layout-form">
-                <FormItem prop="user">
+                <FormItem prop="username">
                     <Input type="text" v-model="login.username" placeholder="用户名" @keyup.13="document.getElementById('password').focus()">
                         <Icon type="ios-person-outline" slot="prepend"></Icon>
                     </Input>
@@ -198,7 +198,7 @@
                     username: [
                         { required: true, message: '请输入用户名。', trigger: 'blur' }
                     ],
-                    passwd: [
+                    password: [
                         { required: true, message: '请输入密码。', trigger: 'blur' },
                     ]
                 },
@@ -230,28 +230,63 @@
                 return this.isPasswdShow ? 'text' : 'password'
             }
         },
+        mounted () {
+            this.checkLogin()
+        },
         methods: {
             newMeeting() {
                 this.$router.push(`/new`);
             },
-            loginSubmit() {
-                //this.login_loading = true;
-                this.$axios.post(`/api/account/login`, this.login)
+            checkLogin() {
+                this.$axios.get(`/api/account/info`)
                 .then((rsp) => {
                     rsp = rsp.data;
-                    this.login_loading = false;
                     if (rsp.state == 0) {
-                        this.login_loading = false;
                         this.loginUser = rsp.data;
-                        this.loginModel = false;
-                    } else {
-                        this.$Message.error(error.message);
-                        console.error(error.message);
                     }
                 })
                 .catch((error) => {
-                    this.$Message.error(error.message);
+                    // this.$Message.error(error.message);
                     console.error(error.message);
+                });
+            },
+            logoutAccount() {
+                this.$axios.get(`/api/account/logout`)
+                .then((rsp) => {
+                    rsp = rsp.data;
+                    if (rsp.state == 0) {
+                        this.loginUser = null;
+                    } else {
+                        this.$Message.error(rsp.msg);
+                        console.error(rsp.msg);
+                    }
+                })
+                .catch((error) => {
+                    // this.$Message.error(error.message);
+                    console.error(error.message);
+                });
+            },
+            loginSubmit() {
+                 this.$refs['loginForm'].validate((valid) => {
+                    if (valid) {
+                        this.login_loading = true;
+                        this.$axios.post(`/api/account/login`, this.login)
+                        .then((rsp) => {
+                            rsp = rsp.data;
+                            this.login_loading = false;
+                            if (rsp.state == 0) {
+                                this.loginUser = rsp.data;
+                                this.loginModel = false;
+                            } else {
+                                this.$Message.error(rsp.msg);
+                                console.error(rsp.msg);
+                            }
+                        })
+                        .catch((error) => {
+                            this.$Message.error(error.message);
+                            console.error(error.message);
+                        });
+                    }
                 });
             }
         }
