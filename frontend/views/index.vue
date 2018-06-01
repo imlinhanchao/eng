@@ -100,7 +100,7 @@
     vertical-align: middle;
     font-size: 22px;
 }
-.new-meeting {
+.big-fixed-btn {
     box-shadow: 1px 1px 5px #AAA;
     border-radius: 2em;
     width: 4em;
@@ -115,7 +115,52 @@
 .login-footer {
     text-align: center
 }
+
+.markdown-preview {
+    max-height: 27em;
+    overflow-y: auto;
+    line-height: 1.5;
+}
 </style>
+<style lang="less">
+.markdown-preview {
+    h1, h2, h3, h4, h5, h6, p, blockquote {
+        margin: 1em auto;
+    }
+    code { 
+        background-color: #d5d5d5; 
+        padding: 2px 5px; 
+        border-radius: 2px; 
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace; 
+    }
+    pre {
+        background-color: #282c34;
+        color: #FFF;
+        padding: .5em 1em;
+        border-left: .4em solid #555;
+        border-radius: 0 .4em .4em 0;
+        code{
+            background-color:transparent; 
+        }
+    }
+    ol, ul {
+        list-style-position: inside;
+    }
+    b, strong {
+        font-weight: bold;
+    }
+    blockquote {
+        padding: 1em;
+        font-style: italic;
+        background: #CCC;
+        border-radius: .3em;
+        p {
+            margin: 0 auto;
+        }
+    }
+}
+</style>
+
 <template>
     <Layout class="layout">
         <Sider :class="'layout-sidebar'" default-collapsed breakpoint="xl" collapsible :collapsed-width="0" v-model="isCollapsed">
@@ -159,6 +204,7 @@
             <Content :style="{padding: '15px 15px'}">
                 <Layout>
                     <router-view />
+                    <div v-if="isLogin"><Button type="primary" class="big-fixed-btn" @click="notesModal=true"><Icon type="plus-round"></Icon></Button></div>
                 </Layout>
             </Content>
         </Layout>
@@ -169,7 +215,7 @@
                         <Icon type="ios-person-outline" slot="prepend"></Icon>
                     </Input>
                 </FormItem>
-                <FormItem prop="password">
+                <FormItem prop="passwd">
                     <Input id="password" :type="passwdType" v-model="login.passwd" placeholder="密码" @keyup.13="loginSubmit('loginForm')">
                         <Icon type="ios-locked-outline" slot="prepend"></Icon>
                         <Button slot="append" :icon="showIcon" @click="isPasswdShow=!isPasswdShow" style="box-shadow:none;" :loading="login_loading"></Button>
@@ -180,15 +226,31 @@
                 <Button type="primary" @click="loginSubmit('loginForm')" :loading="login_loading">登录</Button>
             </div>
         </Modal>
+        <Modal v-model="notesModal" title="笔记" width="700">
+           <Tabs type="card">
+                <TabPane label="笔记" icon="social-markdown">
+                    <Input v-model="notes" type="textarea" placeholder="支持 markdown。" 
+                    :autosize="{ minRows: 5, maxRows: 15 }" size="default"/>
+                </TabPane>
+                <TabPane label="预览" icon="eye">                
+                    <section class="markdown-preview" v-html="compiledMarkdown"></section>
+                </TabPane>
+            </Tabs>
+            <div slot="footer" class="login-footer">
+                <Button type="primary" @click="loginSubmit('loginForm')" :loading="login_loading">添加</Button>
+            </div>
+        </Modal>
     </Layout>
 </template>
 <script>
+    import debounce from 'lodash/debounce';
     export default {
         data () {
             return {
                 isCollapsed: false,
                 loginUser: null,
                 loginModel: false,
+                notesModal: false,
                 login: {
                     username: '',
                     passwd: ''
@@ -198,11 +260,12 @@
                     username: [
                         { required: true, message: '请输入用户名。', trigger: 'blur' }
                     ],
-                    password: [
+                    passwd: [
                         { required: true, message: '请输入密码。', trigger: 'blur' },
                     ]
                 },
-                login_loading: false
+                login_loading: false,
+                notes: ''
             };
         },
         computed: {
@@ -228,6 +291,9 @@
             },
             passwdType () {
                 return this.isPasswdShow ? 'text' : 'password'
+            },
+            compiledMarkdown: function () {
+                return this.$marked(this.notes, { sanitize: true })
             }
         },
         mounted () {
@@ -288,6 +354,9 @@
                         });
                     }
                 });
+            },
+            newNotes () {
+
             }
         }
     }
