@@ -8,7 +8,7 @@
                 </ul>
             </Input>
         </Layout>
-        <Layout v-show="dict.word">
+        <Layout v-if="dict.word">
             <h1 class="dict-word">
                 {{dict.word}}
             </h1>
@@ -17,9 +17,9 @@
                 <span class="dict-tip" v-if="dict.isSelf">第{{page}}页 第{{index}}个</span>
             </section>
             <p v-if="dict.pronunciation">
-                [{{dict.pronunciation.AmE}}]
+                [{{spell.E}}]
                 <Button size="large" type="text" icon="volume-medium" @click="playSound(0)" class="sound-btn"></Button>
-                <audio :src="dict.pronunciation.AmEmp3" class="sound" id="sound0"></audio>
+                <audio :src="spell.mp3" class="sound" id="sound0"></audio>
             </p>
             <h2 class="sub-title">释义</h2>            
             <p>
@@ -72,6 +72,29 @@
                 if (i < 0) return 0;
                 if (i < 70) return i + 1;
                 return (i - 70) % 80 + 1;
+            },
+            spell () {
+                if (this.dict.pronunciation.AmE && this.dict.pronunciation.AmEmp3) {
+                    return {
+                        E: this.dict.pronunciation.AmE,
+                        mp3: this.dict.pronunciation.AmEmp3,
+                    }
+                } else if (this.dict.pronunciation.BrE && this.dict.pronunciation.BrEmp3) {
+                    return {
+                        E: this.dict.pronunciation.BrE,
+                        mp3: this.dict.pronunciation.BrEmp3,
+                    }
+                } else if (this.dict.pronunciation.AmE && this.dict.pronunciation.BrEmp3) {
+                    return {
+                        E: this.dict.pronunciation.AmE,
+                        mp3: this.dict.pronunciation.BrEmp3,
+                    }
+                } else if (this.dict.pronunciation.BrE && this.dict.pronunciation.AmEmp3) {
+                    return {
+                        E: this.dict.pronunciation.BrE,
+                        mp3: this.dict.pronunciation.AmEmp3,
+                    }
+                }
             }
         },
         watch: {

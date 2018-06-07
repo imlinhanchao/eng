@@ -43,10 +43,11 @@ class Module extends App {
                     }
                     if (data[1].trim() == word) index = i;
                 }
+                if (index >= 0) break
             }
             let dict = await this.dict(word);
             if (!dict.word) throw this.error.notexisted;
-            dict.isSelf = index > 0;
+            dict.isSelf = index >= 0;
             dict.index = index;
             return this.okquery(dict);
         }
