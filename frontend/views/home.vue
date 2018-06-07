@@ -172,7 +172,6 @@ h2.sub-title {
     </Layout>
 </template>
 <script>
-    import axios from 'axios';
     import debounce from 'lodash/debounce';
     import Util from '../libs/util';
     export default {
