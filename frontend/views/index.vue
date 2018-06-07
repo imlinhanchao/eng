@@ -204,7 +204,6 @@
             <Content :style="{padding: '15px 15px'}">
                 <Layout>
                     <router-view />
-                    <div v-if="isLogin"><Button type="primary" class="big-fixed-btn" @click="notesModal=true"><Icon type="plus-round"></Icon></Button></div>
                 </Layout>
             </Content>
         </Layout>
@@ -304,54 +303,48 @@
                 this.$router.push(`/new`);
             },
             checkLogin() {
-                this.$axios.get(`/api/account/info`)
-                .then((rsp) => {
-                    rsp = rsp.data;
-                    if (rsp.state == 0) {
-                        this.loginUser = rsp.data;
+                this.$store.dispatch('userInfo', (rsp, err) => {
+                    if (rsp) {
+                        if (rsp.state == 0) {
+                            this.loginUser = rsp.data;
+                        }
+                    } else {
+                        // this.$Message.error(error.message);
                     }
                 })
-                .catch((error) => {
-                    // this.$Message.error(error.message);
-                    console.error(error.message);
-                });
             },
             logoutAccount() {
-                this.$axios.get(`/api/account/logout`)
-                .then((rsp) => {
-                    rsp = rsp.data;
-                    if (rsp.state == 0) {
-                        this.loginUser = null;
+                this.$store.dispatch('logout', (rsp, err) => {
+                    if (rsp) {
+                        if (rsp.state == 0) {
+                            this.loginUser = null;
+                        }
                     } else {
-                        this.$Message.error(rsp.msg);
-                        console.error(rsp.msg);
+                        this.$Message.error(error.message);
                     }
                 })
-                .catch((error) => {
-                    // this.$Message.error(error.message);
-                    console.error(error.message);
-                });
             },
             loginSubmit() {
                  this.$refs['loginForm'].validate((valid) => {
                     if (valid) {
                         this.login_loading = true;
-                        this.$axios.post(`/api/account/login`, this.login)
-                        .then((rsp) => {
-                            rsp = rsp.data;
-                            this.login_loading = false;
-                            if (rsp.state == 0) {
-                                this.loginUser = rsp.data;
-                                this.loginModel = false;
-                            } else {
-                                this.$Message.error(rsp.msg);
-                                console.error(rsp.msg);
+                        this.$store.dispatch('login', {
+                            user: this.login,
+                            callback: (rsp, err) => {
+                                this.login_loading = false;
+                                if (rsp) {
+                                    if (rsp.state == 0) {
+                                        this.loginUser = rsp.data;
+                                        this.loginModel = false;
+                                    } else {
+                                        this.$Message.error(rsp.msg);
+                                        console.error(rsp.msg);
+                                    }
+                                } else {
+                                    this.$Message.error(error.message);
+                                }
                             }
                         })
-                        .catch((error) => {
-                            this.$Message.error(error.message);
-                            console.error(error.message);
-                        });
                     }
                 });
             },

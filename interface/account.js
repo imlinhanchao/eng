@@ -123,7 +123,7 @@ class Module extends App {
             return this.okget(!!data);
         } catch (err) {
             if (err.isdefine) throw (err);
-            throw (this.error.network(err));
+            throw (this.error.db(err));
         }
     }
 
@@ -140,7 +140,7 @@ class Module extends App {
     }
 
     info(bJson = true) {
-        if (!this.session || !this.session.account_login) {
+        if (!this.islogin) {
             throw (this.error.nologin);
         }
         if (!bJson) return this.session.account_login;
