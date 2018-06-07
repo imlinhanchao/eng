@@ -16,6 +16,7 @@ let orm = {
     favcount: {
         type: db.INTEGER,
         comment: '收藏数',
+        defaultValue: 0
     }
 };
 let table_name = prefix + 'notes';

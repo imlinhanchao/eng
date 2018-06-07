@@ -17,6 +17,12 @@ const routers = [{
                 title: '首页'
             },
             component: (resolve) => require(['./views/home.vue'], resolve)
+        },{
+            path: 'w/:word',
+            meta: {
+                title: '单词'
+            },
+            component: (resolve) => require(['./views/home.vue'], resolve)
         },
     ]
     }, {

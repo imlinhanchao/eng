@@ -50,3 +50,41 @@ a {
         margin-right: 6px;
     }
 }
+
+// markdown style
+.markdown-preview {
+    h1, h2, h3, h4, h5, h6, p, blockquote {
+        margin: 1em auto;
+    }
+    code { 
+        background-color: #d5d5d5; 
+        padding: 2px 5px; 
+        border-radius: 2px; 
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace; 
+    }
+    pre {
+        background-color: #282c34;
+        color: #FFF;
+        padding: .5em 1em;
+        border-left: .4em solid #555;
+        border-radius: 0 .4em .4em 0;
+        code{
+            background-color:transparent; 
+        }
+    }
+    ol, ul {
+        list-style-position: inside;
+    }
+    b, strong {
+        font-weight: bold;
+    }
+    blockquote {
+        padding: 1em;
+        font-style: italic;
+        background: #CCC;
+        border-radius: .3em;
+        p {
+            margin: 0 auto;
+        }
+    }
+}

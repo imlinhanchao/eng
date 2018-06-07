@@ -55,11 +55,14 @@ class App {
         return oldData;
     }
 
-    static filter(data, keys) {
+    static filter(data, keys, defaultValue) {
         let d = {};
         if (!data) return d;
         for (let i = 0; i < keys.length; i++) {
-            if (undefined == data[keys[i]]) continue;
+            if (undefined == data[keys[i]]) {
+                if (defaultValue !== undefined) data[keys[i]] = defaultValue
+                continue;
+            }
             d[keys[i]] = data[keys[i]];
             if (d[keys[i]].replace)
                 d[keys[i]] = d[keys[i]].replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
