@@ -37,7 +37,7 @@ const actions = {
                 console.error(error.message);
             });
     },
-    userInfo ({ commit }, callback) {
+    checklogin ({ commit }, callback) {
         axios.get(`/api/account/info`)
             .then((rsp) => {
                 rsp = rsp.data;
@@ -55,6 +55,9 @@ const actions = {
 const getters = {
     isLogin: (state) => {
         return !!state.loginUser
+    },
+    userInfo: (state) => {
+        return state.loginUser
     }
 }
 export default {

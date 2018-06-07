@@ -52,5 +52,8 @@ new Vue({
     methods: {
     },
     computed: {
+    },
+    mounted () {
+        this.$store.dispatch('checklogin', (rsp, err) => {})
     }
 });

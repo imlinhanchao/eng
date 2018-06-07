@@ -100,18 +100,6 @@
     vertical-align: middle;
     font-size: 22px;
 }
-.big-fixed-btn {
-    box-shadow: 1px 1px 5px #AAA;
-    border-radius: 2em;
-    width: 4em;
-    height: 4em;
-    text-align: center;
-    font-size: 1.2em;
-    position: fixed;
-    z-index: 1000;
-    bottom: 1.5em;
-    right: 3em;
-}
 .login-footer {
     text-align: center
 }
@@ -247,7 +235,6 @@
         data () {
             return {
                 isCollapsed: false,
-                loginUser: null,
                 loginModel: false,
                 notesModal: false,
                 login: {
@@ -268,6 +255,9 @@
             };
         },
         computed: {
+            loginUser () {
+                return this.$store.getters.userInfo;
+            },
             menuitemClasses () {
                 return [
                     'menu-item',
@@ -278,7 +268,7 @@
                 return this.loginUser ? this.loginUser.name : '';
             },
             isLogin () {
-                return !!this.loginUser;
+                return this.$store.getters.isLogin;
             },
             collapsed() {
                 return [
@@ -296,31 +286,16 @@
             }
         },
         mounted () {
-            this.checkLogin()
         },
         methods: {
             newMeeting() {
                 this.$router.push(`/new`);
             },
-            checkLogin() {
-                this.$store.dispatch('userInfo', (rsp, err) => {
-                    if (rsp) {
-                        if (rsp.state == 0) {
-                            this.loginUser = rsp.data;
-                        }
-                    } else {
-                        // this.$Message.error(error.message);
-                    }
-                })
-            },
             logoutAccount() {
                 this.$store.dispatch('logout', (rsp, err) => {
-                    if (rsp) {
-                        if (rsp.state == 0) {
-                            this.loginUser = null;
-                        }
-                    } else {
-                        this.$Message.error(error.message);
+                    if (!rsp || rsp.state != 0) {
+                        let err = err.message || rsp.msg
+                        this.$Message.error(err);
                     }
                 })
             },
@@ -332,15 +307,10 @@
                             user: this.login,
                             callback: (rsp, err) => {
                                 this.login_loading = false;
-                                if (rsp) {
-                                    if (rsp.state == 0) {
-                                        this.loginUser = rsp.data;
-                                        this.loginModel = false;
-                                    } else {
-                                        this.$Message.error(rsp.msg);
-                                        console.error(rsp.msg);
-                                    }
+                                if (rsp && rsp.state == 0) {
+                                    this.loginModel = false;
                                 } else {
+                                    let err = err.message || rsp.msg
                                     this.$Message.error(error.message);
                                 }
                             }
