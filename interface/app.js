@@ -143,6 +143,7 @@ class App {
             like: '$',
             between: '<>',
             notBetween: '!<>',
+            in: '~',
         };
     }
 

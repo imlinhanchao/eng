@@ -309,6 +309,7 @@ h2.sub-title {
                     })
                     .then((rsp) => {
                         rsp = rsp.data;
+                        this.notes = '';
                         if (rsp.state == 0) {
                             this.notesModal = false;
                             this.$Message.info(rsp.msg);

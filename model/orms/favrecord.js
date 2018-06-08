@@ -11,7 +11,7 @@ let orm = {
     },
     word: {
         type: db.STRING(200),
-        comment: '笔记所属单词'        
+        comment: '笔记所属单词'
     }
 };
 let table_name = prefix + 'fav_record';

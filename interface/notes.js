@@ -105,6 +105,26 @@ class Module extends App {
             let queryData = await super.query(
                 data, Notes, ops
             );
+            
+            let userIds = queryData.data.map(d => d.createId);
+            let noteIds = queryData.data.map(d => d.id);
+            let users = await this.account.getUsers(userIds, ['id', 'nickname'], true);
+            let favs = FavRecord.findAll({
+                where: {
+                    noteId: {
+                        '$in': noteIds
+                    }
+                }
+            })
+            queryData.data = queryData.data.map(d => {
+                let user = users.data.filter(u => u.id == d.createId)
+                d.nickname = user.length > 0 ? user[0].nickname : 'unknown';
+                d.canEdit = d.createId == this.account.userId;
+                d.isliked = favs.filter(f => f.noteId == d.id && f.userId == this.account.userId).length > 0;
+                d.createId = undefined;
+                return d
+            })
+
             if (onlyData) return queryData;
             return this.okquery(queryData);
         } catch (err) {

@@ -147,6 +147,31 @@ class Module extends App {
         return this.okget(App.filter(this.session.account_login, this.saftKey));
     }
 
+    async getUsers(ids, fields, onlyData=false) {
+        let ops = {
+            id: App.ops.in,
+        };
+        try {
+            let data = {
+                index: 0,
+                count: -1,
+                query: {
+                    id: ids
+                }
+            };
+            if (fields) {
+                data.fields = fields;
+            }
+            let queryData = await super.query(
+                data, Account, ops
+            );
+            if (onlyData) return queryData;
+            return this.okquery(queryData);
+        } catch (err) {
+            throw (err);
+        }
+    }
+
     get userId() {
         if (!this.islogin) {
             throw (this.error.nologin);
