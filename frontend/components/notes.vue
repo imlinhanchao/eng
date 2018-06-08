@@ -10,7 +10,7 @@
     .notes-item {
         position: relative;
         .notes-info {
-            margin: 1em 0;
+            margin: .5em 0 1em;
             border-bottom: 1px dashed #ccc;
             font-size: .8em;
             color: #CDCECF;
@@ -23,10 +23,16 @@
     }
 }
 .fav-btn {
-    font-size: 2em;
+    font-size: 1.5em;
     position: absolute;
-    right: 0;
+    right: -.5em;
     top: -.5em;
+}
+.edit-btn {
+    font-size: 1em;
+    position: absolute;
+    right: .8em;
+    top: -.3em;
 }
 </style>
 <template>
@@ -35,7 +41,8 @@
             <section>
                 <ul class="notes-list">
                     <li class="notes-item" v-for="item in notes.data">
-                        <Button class="fav-btn" size="large" type="text" icon="android-star-outline"></Button>
+                        <Button class="fav-btn" type="text" icon="android-star-outline"></Button>
+                        <Button class="edit-btn" type="text" icon="edit" v-if="item.canEdit"></Button>
                         <div class="notes-content markdown-preview" v-html="compiledMarkdown(item.content)"></div>
                         <p class="notes-info">
                             <span class="nickname">{{item.nickname}}</span>
