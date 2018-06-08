@@ -1,7 +1,7 @@
 const db = require('../db');
 const prefix = require('../config').db.prefix;
 let orm = {
-    favId: {
+    userId: {
         type: db.ID,
         comment: '收藏者'
     },
@@ -14,9 +14,9 @@ let orm = {
         comment: '笔记所属单词'        
     }
 };
-let table_name = prefix + 'notes';
+let table_name = prefix + 'fav_record';
 module.exports = db.defineModel(table_name, orm, {
-    comment: '帐号表',
+    comment: '收藏记录表',
 });
 module.exports.db = db;
 module.exports.tb = table_name;

@@ -21,7 +21,7 @@ let orm = {
 };
 let table_name = prefix + 'notes';
 module.exports = db.defineModel(table_name, orm, {
-    comment: '帐号表',
+    comment: '笔记表',
 });
 module.exports.db = db;
 module.exports.tb = table_name;

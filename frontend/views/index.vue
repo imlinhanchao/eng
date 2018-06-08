@@ -174,6 +174,11 @@
                 <Button type="primary" @click="loginSubmit('loginForm')" :loading="login_loading">登录</Button>
             </div>
         </Modal>
+        <BackTop :style="{
+            right: 'auto',
+            top: '1em',
+            left: '50%'
+        }"></BackTop>
     </Layout>
 </template>
 <script>

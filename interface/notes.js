@@ -1,9 +1,9 @@
 const crypto = require('crypto');
 const model = require('../model');
 const App = require('./app');
+const Account = require('./account');
 const Notes = model.notes;
-
-const __salt = require('../config').salt;
+const FavRecord = model.favrecord;
 
 let __error__ = Object.assign({}, App.error);
 __error__.verify = App.error.reg('帐号或密码错误！');
@@ -15,6 +15,7 @@ class Module extends App {
         this.session = session;
         this.name = '笔记';
         this.saftKey = Notes.keys().concat(['id']);
+        this.account = new Account(session);
     }
 
     get error() {
@@ -31,7 +32,7 @@ class Module extends App {
         data = App.filter(data, Notes.keys());
         
         try {
-            data.createId = this.userId;
+            data.createId = this.account.userId;
             data.favcount = 0;
             return this.okcreate(App.filter(await super.new(data, Notes), this.saftKey));
         } catch (err) {
@@ -49,6 +50,10 @@ class Module extends App {
 
         data = App.filter(data, Notes.keys());
 
+        if (data.createId != this.account.userId) {
+            throw this.error.unauthorized
+        }
+
         try {
             // 更新内容不许修改收藏总数
             data.favcount = undefined;
@@ -63,12 +68,25 @@ class Module extends App {
 
     async star(id) {
         try {
+            let record = await FavRecord.findOne({
+                where: {
+                    noteId: id,
+                    userId: this.account.userId
+                }
+            });
+
             let data = await Notes.findOne({
                 where: {
                     id: id
                 }
             });
-            data.favcount += 1;
+
+            if (record) {
+                record.destory();
+            }
+
+            data.favcount += record ? -1 : 1;
+
             data.save()
             return data.favcount;
         } catch (err) {
@@ -77,11 +95,21 @@ class Module extends App {
         }
     }
 
-    get userId() {
-        if (!this.session || !this.session.account_login) {
-            throw (this.error.nologin);
+    async query(data, onlyData = false) {
+        let ops = {
+            createId: App.ops.equal,
+            word: App.ops.equal,
+        };
+        try {
+            data.query = data.query || {};
+            let queryData = await super.query(
+                data, Notes, ops
+            );
+            if (onlyData) return queryData;
+            return this.okquery(queryData);
+        } catch (err) {
+            throw (err);
         }
-        return this.session.account_login.id;
     }
 }
 

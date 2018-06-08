@@ -133,7 +133,7 @@ class App {
 
     static get ops() {
         return {
-            Equal: '=',
+            equal: '=',
             notEqual: '!=',
             less: '<',
             lessOrEqual: '<=',
@@ -331,7 +331,7 @@ class App {
 
     static get error() {
         return {
-            __count: 8,
+            __count: 9,
             init: function (errorCode) {
                 this.__count = errorCode;
             },
@@ -376,8 +376,12 @@ class App {
                 6,
                 '权限不足'
             ),
-            nologin: new AppError(
+            unauthorized: new AppError(
                 7,
+                '越权请求'
+            ),
+            nologin: new AppError(
+                8,
                 '你没有登录或登录信息已过期！'
             ),
 

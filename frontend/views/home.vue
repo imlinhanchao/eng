@@ -142,6 +142,10 @@ h2.sub-title {
                 </p>
                 <p class="sam-chn">{{sam.chn}}</p>
             </section>
+            <h2 class="sub-title" id="notes">笔记</h2>
+            <notes :query="{
+                    word: word
+                }" :order="['favcount']"></notes>
         </Layout>
         <Layout v-show="!dict.word">
             <h2 class="sub-title">使用方法</h2>
@@ -174,8 +178,10 @@ h2.sub-title {
 <script>
     import debounce from 'lodash/debounce';
     import Util from '../libs/util';
+    import notes from '../components/notes'
     export default {
         components: {
+            notes
         },
         mounted() {
             this.debouncedInputWord = debounce(this.inputWord, 500)
@@ -259,6 +265,7 @@ h2.sub-title {
                 }
             },
             query () {
+                if (!this.word)  this.$router.push(`/`);
                 this.$router.push(`/w/${this.word}`);
                 this.getWord();
             },

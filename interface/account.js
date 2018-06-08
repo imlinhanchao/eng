@@ -35,9 +35,9 @@ class Module extends App {
         data = App.filter(data, keys);
 
         try {
-            let account = await this.exist(data.username, false);
+            let account = await this.exist(data.username, true);
             if(!account) {
-                account = await this.create(data, false);
+                account = await this.create(data, true);
             } else {
                 let sha256 = crypto.createHash('sha256');
                 let passwd = sha256.update(data.passwd + __salt).digest('hex');
@@ -54,7 +54,7 @@ class Module extends App {
         }
     }
 
-    async create(data, bJson = true) {
+    async create(data, onlyData = false) {
         const keys = ['username', 'passwd'];
 
         if (!App.haskeys(data, keys)) {
@@ -74,7 +74,7 @@ class Module extends App {
             let sha256 = crypto.createHash('sha256');
             data.passwd = sha256.update(data.passwd + __salt).digest('hex');
             account = await super.new(data, Account);
-            if (!bJson) return account;
+            if (onlyData) return account;
             return this.okcreate(App.filter(account, this.saftKey));
         } catch (err) {
             if (err.isdefine) throw (err);
@@ -92,11 +92,11 @@ class Module extends App {
         data = App.filter(data, Account.keys());
 
         try {
-            // 用户名不可更改
-            let account = this.info(false);
+            let account = this.info(true);
             if (account.username != data.username) {
                 throw this.error.limited;
             }
+            // 用户名不可更改
             data.username = undefined;
             if (account.passwd) {
                 let sha256 = crypto.createHash('sha256');
@@ -112,14 +112,14 @@ class Module extends App {
         }
     }
 
-    async exist(username, bJson = true) {
+    async exist(username, onlyData = false) {
         try {
             let data = await Account.findOne({
                 where: {
                     username: username
                 }
             });
-            if (!bJson) return data;
+            if (onlyData) return data;
             return this.okget(!!data);
         } catch (err) {
             if (err.isdefine) throw (err);
@@ -128,7 +128,7 @@ class Module extends App {
     }
 
     logout() {
-        if (!this.session || !this.session.account_login) {
+        if (!this.islogin) {
             throw (this.error.nologin);
         }
         this.session.account_login = undefined;
@@ -139,12 +139,19 @@ class Module extends App {
         return this.session && this.session.account_login;
     }
 
-    info(bJson = true) {
+    info(onlyData = false) {
         if (!this.islogin) {
             throw (this.error.nologin);
         }
-        if (!bJson) return this.session.account_login;
+        if (onlyData == true) return this.session.account_login;
         return this.okget(App.filter(this.session.account_login, this.saftKey));
+    }
+
+    get userId() {
+        if (!this.islogin) {
+            throw (this.error.nologin);
+        }
+        return this.session.account_login.id;
     }
 }
 
