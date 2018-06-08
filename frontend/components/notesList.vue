@@ -55,13 +55,24 @@
     bottom: 1.5em;
     right: 1em;
 }
+.title {
+    background: #495060;
+    margin: 0 0 1em;
+    padding: 0 .2em;
+    display: inline-block;
+    color: #FFF;
+}
 </style>
 <template>
     <Layout>
         <article v-if="notes.data.length">
+            <header>
+                <h1 class="title">{{title}}</h1>
+            </header>
             <section>
                 <ul class="notes-list">
                     <li class="notes-item" v-for="item in notes.data" :key="item.id">
+                        <h2 class="word-title">{{item.word}}</h2>
                         <div class="toolbar">
                             <Button class="edit-btn" type="text" icon="edit" v-if="item.canEdit" @click="launchUpdate(item)"></Button>
                             <Button class="fav-btn" type="text" v-if="$store.getters.isLogin" @click="star(item)">
@@ -82,11 +93,8 @@
             </section>
         </article>
         <article v-if="!notes.data.length">
-            <p class="notes-none">还没有任何笔记哦~ 快快点击右边的大按钮添加你的笔记吧！</p>
+            <p class="notes-none">还没有任何笔记哦~ 快快去查询单词添加笔记吧！</p>
         </article>
-        <Layout v-if="$store.getters.isLogin && word">
-           <Button type="primary" class="big-fixed-btn" @click="notesModal=true"><Icon type="plus-round"></Icon></Button>
-        </Layout>
         <Modal v-model="notesModal" title="笔记" width="700" @on-cancel="notesInput=''">
            <Tabs type="card">
                 <TabPane label="笔记" icon="social-markdown">
@@ -99,7 +107,7 @@
             </Tabs>
             <input type="hidden" name="noteid" v-model="notesId" />
             <div slot="footer" class="login-footer">
-                <Button type="primary" @click="newNotes" :loading="noteloading">{{submitWord}}</Button>
+                <Button type="primary" @click="updateNotes" :loading="noteloading">更新</Button>
             </div>
         </Modal>
     </Layout>
@@ -112,13 +120,13 @@ export default {
             type: Object,
             required: true
         },
+        title: {
+            type: String,
+            default: '笔记'
+        },
         order: {
             type: Array,
             default: []
-        },
-        word: {
-            type: String,
-            default: ''
         }
     },
     watch: {
@@ -137,8 +145,7 @@ export default {
             notesModal: false,
             notesInput: '',
             notesId: '',
-            noteloading: false,
-            newMode: true
+            noteloading: false
       }
     },
     methods: {
@@ -186,35 +193,12 @@ export default {
                     console.error(error.message);
                 });
         },
-        newNotes () {
+        updateNotes () {
             if (!this.notesInput.trim()) {
                 this.$Message.error('笔记不能为空！');
                 return;
             }
             this.noteloading = true;
-            if (!this.newMode) return this.updateNotes();
-            this.$axios.post(`/api/notes/create`, {
-                    word: this.word,
-                    content: this.notesInput
-                })
-                .then((rsp) => {
-                    rsp = rsp.data;
-                    this.notesInput = '';
-                    this.noteloading = false;
-                    this.queryNotes();
-                    if (rsp.state == 0) {
-                        this.notesModal = false;
-                        this.$Message.success(rsp.msg);
-                    } else {
-                        this.$Message.error(rsp.msg);
-                    }
-                })
-                .catch((error) => {
-                    this.$Message.error(error.message);
-                    console.error(error.message);
-                });
-        },
-        updateNotes () {
             this.$axios.post(`/api/notes/update`, {
                     id: this.notesId,
                     content: this.notesInput
@@ -251,9 +235,6 @@ export default {
         this.queryNotes()
     },
     computed: {
-        submitWord () {
-            return this.newMode ? '添加' : '更新'
-        }
     }
 }
 </script>

@@ -94,6 +94,21 @@ class Module extends App {
         };
         try {
             data.query = data.query || {};
+
+            if (data.query.favUserId) {
+                let favs = this.account.islogin ? await FavRecord.findAll({
+                    where: {
+                        userId: this.account.userId
+                    }
+                }) : [];
+                if (favs) {
+                    data.query.id = {
+                        op: App.ops.in,
+                        val: favs.map(f => f.noteId)
+                    };
+                }
+            }
+
             let queryData = await super.query(
                 data, Notes, ops
             );

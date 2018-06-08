@@ -18,7 +18,7 @@ class Module extends App {
         ]);
         this.session = session;
         this.name = '用户';
-        this.saftKey = Account.keys().filter(k => ['passwd'].indexOf(k) < 0);
+        this.saftKey = ['id'].concat(Account.keys().filter(k => ['passwd'].indexOf(k) < 0));
     }
 
     get error() {

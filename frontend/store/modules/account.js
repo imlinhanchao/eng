@@ -54,10 +54,10 @@ const actions = {
 }
 const getters = {
     isLogin: (state) => {
-        return !!state.loginUser
+        return !!state.loginUser;
     },
     userInfo: (state) => {
-        return state.loginUser
+        return state.loginUser;
     }
 }
 export default {

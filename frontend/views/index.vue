@@ -117,7 +117,11 @@
                 <!-- <Icon type="person"></Icon> -->
                 <span>{{loginUser.nickname}}</span>
             </Header>
-            <Menu active-name="1-1" theme="dark" width="auto" :class="menuitemClasses">
+            <Menu :active-name="menuActive" theme="dark" width="auto" :class="menuitemClasses">
+                <MenuItem name="1-0" v-if="!isLogin">
+                    <span @click="loginModel = true"><Icon type="log-in"></Icon>
+                    <span>登录</span></span>
+                </MenuItem>
                 <MenuItem name="1-1" v-if="isLogin">
                     <router-link to="/"><Icon type="ios-search-strong"></Icon>
                     <span>查询单词</span></router-link>
@@ -133,10 +137,6 @@
                 <MenuItem name="1-4" v-if="isLogin">
                     <span @click="logoutAccount"><Icon type="log-out"></Icon>
                     <span>退出</span></span>
-                </MenuItem>
-                <MenuItem name="1-5" v-if="!isLogin">
-                    <span @click="loginModel = true"><Icon type="log-in"></Icon>
-                    <span>登录</span></span>
                 </MenuItem>
             </Menu>
             <Footer class="layout-footer">
@@ -200,7 +200,8 @@
                         { required: true, message: '请输入密码。', trigger: 'blur' },
                     ]
                 },
-                login_loading: false
+                login_loading: false,
+                menuActive: '1-1'
             };
         },
         computed: {
@@ -246,6 +247,7 @@
                         err = (err && err.message) || rsp.msg
                         this.$Message.error(err);
                     }
+                    this.menuActive = '1-1';
                 })
             },
             loginSubmit() {
@@ -258,6 +260,7 @@
                                 this.login_loading = false;
                                 if (rsp && rsp.state == 0) {
                                     this.loginModel = false;
+                                    this.menuActive = '1-1';
                                 } else {
                                     err = (err && err.message) || rsp.msg
                                     this.$Message.error(err);

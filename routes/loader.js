@@ -4,15 +4,6 @@ const App = modules.app;
 function loader(Module) {
     var express = require('express');
     var router = express.Router();
-    router.all('/:fn*', function (req, res, next) {
-        if (process.env.NODE_ENV === 'development') {
-            res.header('Access-Control-Allow-Origin', req.headers.origin);
-            res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE, PUT');
-            res.header('Access-Control-Allow-Credentials', 'true');
-            res.header('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept,X-Requested-With');
-        }
-        next();
-    });
 
     router.post('/:fn', function (req, res) {
         (async () => {
