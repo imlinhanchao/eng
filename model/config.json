@@ -1,6 +1,6 @@
 {
     "db": {
-        "host": "10.50.9.153",
+        "host": "localhost",
         "user": "root",
         "password": "123456",
         "database": "eng",
