@@ -7,7 +7,7 @@ const __salt = require('../config').salt;
 
 let __error__ = Object.assign({}, App.error);
 __error__.verify = App.error.reg('帐号或密码错误！');
-__error__.exist = App.error.existed('帐号');
+__error__.existed = App.error.existed('帐号');
 
 class Module extends App {
     constructor(session) {
@@ -64,7 +64,7 @@ class Module extends App {
         data = App.filter(data, Account.keys());
         
         try {
-            let account = await this.exist(data.username, false);
+            let account = await this.exist(data.username, true);
             if (account) {
                 throw (this.error.existed);
             }

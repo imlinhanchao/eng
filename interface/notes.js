@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const model = require('../model');
 const App = require('./app');
 const Account = require('./account');
@@ -11,7 +10,9 @@ __error__.exist = App.error.existed('帐号');
 
 class Module extends App {
     constructor(session) {
-        super([]);
+        super([
+            { fun: App.ok, name: 'okstar', msg: '收藏成功' }
+        ]);
         this.session = session;
         this.name = '笔记';
         this.saftKey = Notes.keys().concat(['id']);
@@ -23,14 +24,6 @@ class Module extends App {
     }
     
     async create(data) {
-        const keys = ['content', 'word'];
-
-        if (!App.haskeys(data, keys)) {
-            throw (this.error.param);
-        }
-
-        data = App.filter(data, Notes.keys());
-        
         try {
             data.createId = this.account.userId;
             data.favcount = 0;
@@ -42,24 +35,16 @@ class Module extends App {
     }
 
     async update(data) {
-        const keys = ['id'];
-
-        if (!App.haskeys(data, keys)) {
-            throw (this.error.param);
-        }
-
-        data = App.filter(data, Notes.keys());
-
-        if (data.createId != this.account.userId) {
-            throw this.error.unauthorized
-        }
-
         try {
             // 更新内容不许修改收藏总数
             data.favcount = undefined;
             // 创建者不许修改
             data.createId = undefined;
-            return this.okupdate(App.filter(await super.set(data, Notes), this.saftKey));
+            return this.okupdate(App.filter(await super.set(data, Notes, (notes) => {
+                if (notes.createId != this.account.userId) {
+                    throw this.error.unauthorized;
+                }
+            }), this.saftKey));
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
@@ -81,14 +66,21 @@ class Module extends App {
                 }
             });
 
-            if (record) {
-                record.destory();
+            let like = !!record;
+            data.favcount += like ? -1 : 1;
+
+            if (like) {
+                record.destroy();
+            } else {
+                FavRecord.create({
+                    noteId: id,
+                    userId: this.account.userId,
+                    word: data.word
+                });
             }
 
-            data.favcount += record ? -1 : 1;
-
-            data.save()
-            return data.favcount;
+            data.save();
+            return this.okstar(like);
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
@@ -107,23 +99,24 @@ class Module extends App {
             );
             
             let userIds = queryData.data.map(d => d.createId);
-            let noteIds = queryData.data.map(d => d.id);
+            let noteIds = this.account.islogin ? queryData.data.map(d => d.id) : null;
             let users = await this.account.getUsers(userIds, ['id', 'nickname'], true);
-            let favs = FavRecord.findAll({
+            let favs = this.account.islogin ? await FavRecord.findAll({
                 where: {
                     noteId: {
                         '$in': noteIds
                     }
                 }
-            })
+            }) : null;
             queryData.data = queryData.data.map(d => {
-                let user = users.data.filter(u => u.id == d.createId)
+                let user = users.data.filter(u => u.id == d.createId);
                 d.nickname = user.length > 0 ? user[0].nickname : 'unknown';
-                d.canEdit = d.createId == this.account.userId;
-                d.isliked = favs.filter(f => f.noteId == d.id && f.userId == this.account.userId).length > 0;
+                d.canEdit = this.account.islogin ? d.createId == this.account.userId : false;
+                
+                d.isliked = this.account.islogin ? favs.filter(f => f.noteId == d.id && f.userId == this.account.userId).length > 0 : false;
                 d.createId = undefined;
-                return d
-            })
+                return d;
+            });
 
             if (onlyData) return queryData;
             return this.okquery(queryData);

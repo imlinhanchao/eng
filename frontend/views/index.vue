@@ -243,7 +243,7 @@
             logoutAccount() {
                 this.$store.dispatch('logout', (rsp, err) => {
                     if (!rsp || rsp.state != 0) {
-                        let err = err.message || rsp.msg
+                        err = (err && err.message) || rsp.msg
                         this.$Message.error(err);
                     }
                 })
@@ -259,8 +259,8 @@
                                 if (rsp && rsp.state == 0) {
                                     this.loginModel = false;
                                 } else {
-                                    let err = err.message || rsp.msg
-                                    this.$Message.error(error.message);
+                                    err = (err && err.message) || rsp.msg
+                                    this.$Message.error(err);
                                 }
                             }
                         })

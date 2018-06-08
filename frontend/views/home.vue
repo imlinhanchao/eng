@@ -88,18 +88,6 @@ h2.sub-title {
     }
 }
 
-.big-fixed-btn {
-    box-shadow: 1px 1px 5px #AAA;
-    border-radius: 2em;
-    width: 4em;
-    height: 4em;
-    text-align: center;
-    font-size: 1.2em;
-    position: fixed;
-    z-index: 1000;
-    bottom: 1.5em;
-    right: 1em;
-}
 </style>
 <template>
     <Layout class="home">
@@ -143,9 +131,11 @@ h2.sub-title {
                 <p class="sam-chn">{{sam.chn}}</p>
             </section>
             <h2 class="sub-title" id="notes">笔记</h2>
-            <notes :query="{
+            <notes 
+                :word="word"
+                :query="{
                     word: word
-                }" :order="['favcount']"></notes>
+                }" :order="[['favcount', 'desc']]"></notes>
         </Layout>
         <Layout v-show="!dict.word">
             <h2 class="sub-title">使用方法</h2>
@@ -156,23 +146,6 @@ h2.sub-title {
                 </ol>
             </p>
         </Layout>
-        <Layout v-if="this.$store.getters.isLogin && dict.word">
-           <Button type="primary" class="big-fixed-btn" @click="notesModal=true"><Icon type="plus-round"></Icon></Button>
-        </Layout>
-        <Modal v-model="notesModal" title="笔记" width="700" @on-cancel="notes=''">
-           <Tabs type="card">
-                <TabPane label="笔记" icon="social-markdown">
-                    <Input v-model="notes" type="textarea" placeholder="支持 markdown。" 
-                    :autosize="{ minRows: 5, maxRows: 15 }" size="default"/>
-                </TabPane>
-                <TabPane label="预览" icon="eye">                
-                    <section class="markdown-preview" v-html="compiledMarkdown"></section>
-                </TabPane>
-            </Tabs>
-            <div slot="footer" class="login-footer">
-                <Button type="primary" @click="newNotes">添加</Button>
-            </div>
-        </Modal>
     </Layout>
 </template>
 <script>
@@ -230,11 +203,10 @@ h2.sub-title {
             }
         },
         watch: {
-            word: function (newQuestion, oldQuestion) {
+            word (val) {
                 if (document.activeElement
                 && document.activeElement.parentElement.id == 'search') 
                     this.debouncedInputWord()
-                else console.log(document.activeElement)
             }
         },
         methods: {
@@ -297,37 +269,12 @@ h2.sub-title {
                     this.$Message.error(error.message);
                     console.error(error.message);
                 });
-            },
-            newNotes () {
-                if (!this.notes.trim()) {
-                    this.$Message.error('笔记不能为空！');
-                    return;
-                }
-                this.$axios.post(`/api/notes/create`, {
-                        word: this.word,
-                        content: this.notes
-                    })
-                    .then((rsp) => {
-                        rsp = rsp.data;
-                        this.notes = '';
-                        if (rsp.state == 0) {
-                            this.notesModal = false;
-                            this.$Message.info(rsp.msg);
-                        } else {
-                            this.$Message.error(rsp.msg);
-                        }
-                    })
-                    .catch((error) => {
-                        this.$Message.error(error.message);
-                        console.error(error.message);
-                    });
             }
         },
         data() {
             return {
                 word: this.$route.params.word || '',
                 words: [],
-                notesModal: false,
                 searchLoading: false,
                 debouncedInputWord: null,
                 dict: {
@@ -342,8 +289,7 @@ h2.sub-title {
                     },
                     defs: [],
                     sams: []
-                },
-                notes: ''
+                }
             };
         }
     };

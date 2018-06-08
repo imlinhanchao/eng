@@ -254,7 +254,7 @@ class App {
         }
     }
 
-    async set(data, Model, unique = 'id') {
+    async set(data, Model, preUpdate = function () { }, unique = 'id') {
         let keys = Model.keys();
         keys = ['id'].concat(keys).concat(['create_time', 'update_time']);
 
@@ -274,6 +274,8 @@ class App {
             if (!record) {
                 throw (App.error.existed(this.name, false));
             }
+
+            preUpdate(record);
 
             data[unique] = undefined;
             record = App.update(record, data, keys);
