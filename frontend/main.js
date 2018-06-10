@@ -5,7 +5,7 @@ import Routers from './router';
 import Vuex from 'vuex';
 import Util from './libs/util';
 import App from './app.vue';
-import store from './store'
+import store from './store';
 import 'iview/dist/styles/iview.css';
 import './theme/index.less';
 import axios from 'axios';
@@ -52,6 +52,6 @@ new Vue({
     computed: {
     },
     mounted () {
-        this.$store.dispatch('checklogin', (rsp, err) => {})
+        this.$store.dispatch('checklogin', (rsp, err) => { });
     }
 });

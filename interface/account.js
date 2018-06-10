@@ -139,29 +139,28 @@ class Module extends App {
         return this.session && this.session.account_login;
     }
 
-    info(onlyData = false) {
+    info(onlyData = false, fields=null) {
         if (!this.islogin) {
             throw (this.error.nologin);
         }
-        if (onlyData == true) return this.session.account_login;
-        return this.okget(App.filter(this.session.account_login, this.saftKey));
+        fields = fields || this.saftKey;
+        if (onlyData == true) return App.filter(this.session.account_login, fields);
+        return this.okget(App.filter(this.session.account_login, fields));
     }
 
-    async getUsers(ids, fields, onlyData=false) {
+    async query(query, fields=null, onlyData=false) {
         let ops = {
             id: App.ops.in,
+            username: App.ops.equal,
         };
+        query = App.filter(query, Object.keys(ops));
         try {
             let data = {
                 index: 0,
                 count: -1,
-                query: {
-                    id: ids
-                }
+                query
             };
-            if (fields) {
-                data.fields = fields;
-            }
+            data.fields = fields || this.saftKey;
             let queryData = await super.query(
                 data, Account, ops
             );

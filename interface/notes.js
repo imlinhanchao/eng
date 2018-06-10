@@ -95,10 +95,26 @@ class Module extends App {
         try {
             data.query = data.query || {};
 
+            if (data.query.createUser) {
+                let users = await this.account.query({
+                    username: data.query.createUser
+                }, ['id'], true);
+                if (users.total)
+                    data.query.createId = users.data[0].id;
+            }
+
+            if (data.query.favUser) {
+                let users = await this.account.query({
+                    username: data.query.favUser
+                }, ['id'], true);
+                if (users.total)
+                    data.query.favUserId = users.data[0].id;
+            }
+
             if (data.query.favUserId) {
                 let favs = this.account.islogin ? await FavRecord.findAll({
                     where: {
-                        userId: this.account.userId
+                        userId: data.query.favUserId
                     }
                 }) : [];
                 if (favs) {
@@ -115,7 +131,7 @@ class Module extends App {
             
             let userIds = queryData.data.map(d => d.createId);
             let noteIds = this.account.islogin ? queryData.data.map(d => d.id) : null;
-            let users = await this.account.getUsers(userIds, ['id', 'nickname'], true);
+            let users = await this.account.query({ id: userIds }, ['id', 'nickname', 'username'], true);
             let favs = this.account.islogin ? await FavRecord.findAll({
                 where: {
                     noteId: {
@@ -126,6 +142,7 @@ class Module extends App {
             queryData.data = queryData.data.map(d => {
                 let user = users.data.filter(u => u.id == d.createId);
                 d.nickname = user.length > 0 ? user[0].nickname : 'unknown';
+                d.username = user.length > 0 ? user[0].username : 'unknown';
                 d.canEdit = this.account.islogin ? d.createId == this.account.userId : false;
                 
                 d.isliked = this.account.islogin ? favs.filter(f => f.noteId == d.id && f.userId == this.account.userId).length > 0 : false;

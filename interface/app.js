@@ -60,7 +60,7 @@ class App {
         if (!data) return d;
         for (let i = 0; i < keys.length; i++) {
             if (undefined == data[keys[i]]) {
-                if (defaultValue !== undefined) data[keys[i]] = defaultValue
+                if (defaultValue !== undefined) data[keys[i]] = defaultValue;
                 continue;
             }
             d[keys[i]] = data[keys[i]];

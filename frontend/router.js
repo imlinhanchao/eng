@@ -6,7 +6,7 @@ const routers = [{
     component: (resolve) => require(['./views/index.vue'], resolve),
     beforeRouteEnter(to, from, next) {
         if(!this.$root.loginUser) {
-            to = '/login';
+            to = '/';
             next();
         }
     },
@@ -38,11 +38,17 @@ const routers = [{
         },
         component: (resolve) => require(['./views/index.vue'], resolve),
         children: [{
-            path: '/w/:word',
+            path: 'w/:word',
             meta: {
                 title: '单词'
             },
             component: (resolve) => require(['./views/home.vue'], resolve)
+        }, {
+            path: 'u/:user',
+            meta: {
+                title: '用户'
+            },
+            component: (resolve) => require(['./views/user.vue'], resolve)
         }]
     }, {
         path: '*',

@@ -66,7 +66,7 @@
 <template>
     <Layout>
         <article v-if="notes.data.length">
-            <header>
+            <header v-if="title.length">
                 <h1 class="title">{{title}}</h1>
             </header>
             <section>
@@ -82,7 +82,7 @@
                         </div>
                         <div class="notes-content markdown-preview" v-html="compiledMarkdown(item.content)"></div>
                         <p class="notes-info">
-                            <span class="nickname">{{item.nickname}}</span>
+                            <span class="nickname"><router-link :to="`/u/${item.username}`">{{item.nickname}}</router-link></span>
                             <span class="createtime">{{new Date(item.create_time * 1000).toLocaleString('zh-CN', {hour12: false})}}</span>
                         </p>
                     </li>
@@ -93,7 +93,7 @@
             </section>
         </article>
         <article v-if="!notes.data.length">
-            <p class="notes-none">还没有任何笔记哦~ 快快去查询单词添加笔记吧！</p>
+            <p class="notes-none">{{tip}}</p>
         </article>
         <Modal v-model="notesModal" title="笔记" width="700" @on-cancel="notesInput=''">
            <Tabs type="card">
@@ -122,11 +122,15 @@ export default {
         },
         title: {
             type: String,
-            default: '笔记'
+            default: ''
         },
         order: {
             type: Array,
             default: []
+        },
+        tip: {
+            type: String,
+            default: '还没有任何笔记哦~ 快快去查询单词添加笔记吧！'
         }
     },
     watch: {

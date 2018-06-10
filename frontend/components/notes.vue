@@ -71,7 +71,7 @@
                         </div>
                         <div class="notes-content markdown-preview" v-html="compiledMarkdown(item.content)"></div>
                         <p class="notes-info">
-                            <span class="nickname">{{item.nickname}}</span>
+                            <span class="nickname"><router-link :to="`/u/${item.username}`">{{item.nickname}}</router-link></span>
                             <span class="createtime">{{new Date(item.create_time * 1000).toLocaleString('zh-CN', {hour12: false})}}</span>
                         </p>
                     </li>
