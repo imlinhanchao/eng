@@ -238,9 +238,6 @@
         mounted () {
         },
         methods: {
-            newMeeting() {
-                this.$router.push(`/new`);
-            },
             logoutAccount() {
                 this.$store.dispatch('logout', (rsp, err) => {
                     if (!rsp || rsp.state != 0) {
