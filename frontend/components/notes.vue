@@ -55,6 +55,9 @@
     bottom: 1.5em;
     right: 1em;
 }
+.toolform {
+    margin: 1em 0;
+}
 </style>
 <template>
     <Layout>
@@ -88,7 +91,10 @@
            <Button type="primary" class="big-fixed-btn" @click="notesModal=true"><Icon type="plus-round"></Icon></Button>
         </Layout>
         <Modal v-model="notesModal" title="笔记" width="700" @on-cancel="notesInput=''">
-           <Tabs type="card">
+            <p class="toolform">
+                <Checkbox v-model="autoword">自动将所有 ~ 替换为当前单词</Checkbox>
+            </p>
+            <Tabs type="card">
                 <TabPane label="笔记" icon="social-markdown">
                     <Input v-model="notesInput" type="textarea" placeholder="支持 markdown。" 
                     :autosize="{ minRows: 5, maxRows: 15 }" size="default"/>
@@ -124,6 +130,19 @@ export default {
     watch: {
         query (val) {
             this.queryNotes()
+        },
+        notesInput (val) {
+            if (this.autoword && val.indexOf('~') >= 0) {
+                this.notesInput = val.replace(/([^\\]|)~/g, `$1${this.word}`);
+            }
+            if (this.notesInput.match(/([^\s]{2}|^)\n/g)) {
+                this.notesInput = this.notesInput.replace(/([^\s]{2}|^)\n/g, '$1  \n')
+            }
+        },
+        autoword (val) {
+            if (this.autoword && this.notesInput.indexOf('~') >= 0) {
+                this.notesInput = this.notesInput.replace(/([^\\]|)~/g, `$1${this.word}`);
+            }
         }
     },
     data () {
@@ -138,7 +157,8 @@ export default {
             notesInput: '',
             notesId: '',
             noteloading: false,
-            newMode: true
+            newMode: true,
+            autoword: true
       }
     },
     methods: {
