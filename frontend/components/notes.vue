@@ -135,8 +135,8 @@ export default {
             if (this.autoword && val.indexOf('~') >= 0) {
                 this.notesInput = val.replace(/([^\\]|)~/g, `$1${this.word}`);
             }
-            if (this.notesInput.match(/([^\s]{2}|^)\n/g)) {
-                this.notesInput = this.notesInput.replace(/([^\s]{2}|^)\n/g, '$1  \n')
+            if (this.notesInput.match(/([^\s]{1,2}|^)\n/g)) {
+                this.notesInput = this.notesInput.replace(/([^\s]{1,2}|^)\n/g, '$1  \n')
             }
         },
         autoword (val) {
