@@ -7,6 +7,7 @@
         "dev": "webpack-dev-server --content-base ./views/ --open --inline --hot --compress --history-api-fallback --config ./build/webpack.dev.config.js",
         "server": "cross-env NODE_ENV=development node ./bin/www",
         "build": "webpack --progress --hide-modules --config ./build/webpack.prod.config.js",
+        "initdb": "node scripts/init_db.js",
         "lint": "eslint --fix --ext .js,.vue frontend"
     },
     "dependencies": {

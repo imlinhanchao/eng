@@ -72,7 +72,7 @@
             <section>
                 <ul class="notes-list">
                     <li class="notes-item" v-for="item in notes.data" :key="item.id">
-                        <h2 class="word-title">{{item.word}}</h2>
+                        <h2 class="word-title"><router-link :to="`/w/${item.word}`">{{item.word}}</router-link></h2>
                         <div class="toolbar">
                             <Button class="edit-btn" type="text" icon="edit" v-if="item.canEdit" @click="launchUpdate(item)"></Button>
                             <Button class="fav-btn" type="text" v-if="$store.getters.isLogin" @click="star(item)">

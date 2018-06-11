@@ -82,7 +82,7 @@
             </section>
         </article>
         <article v-if="!notes.data.length">
-            <p class="notes-none">还没有任何笔记哦~ 快快点击右边的大按钮添加你的笔记吧！</p>
+            <p class="notes-none">还没有任何笔记哦~ <span v-if="$store.getters.isLogin">快快点击右边的大按钮添加你的笔记吧！</span></p>
         </article>
         <Layout v-if="$store.getters.isLogin && word">
            <Button type="primary" class="big-fixed-btn" @click="notesModal=true"><Icon type="plus-round"></Icon></Button>
