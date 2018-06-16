@@ -158,9 +158,7 @@ h2.sub-title {
         },
         mounted() {
             this.debouncedInputWord = debounce(this.inputWord, 500)
-            if (this.word) {
-                this.getWord();
-            }
+            this.getWord();
         },
         computed: {
             page() {
@@ -212,6 +210,10 @@ h2.sub-title {
                 if (document.activeElement
                 && document.activeElement.parentElement.id == 'search') 
                     this.debouncedInputWord()
+            },
+            '$route.params.word'(val) {
+                this.word = this.$route.params.word
+                this.getWord();
             }
         },
         methods: {
@@ -244,9 +246,10 @@ h2.sub-title {
             query () {
                 if (!this.word)  this.$router.push(`/`);
                 this.$router.push(`/w/${this.word}`);
-                this.getWord();
+                // this.getWord();
             },
             getWord () {
+                if (!this.word) return
                 this.words = [];
                 let word = this.word;
                 let numMat = word.match(/\d+/g);
