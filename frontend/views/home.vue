@@ -196,6 +196,11 @@ h2.sub-title {
                         E: this.dict.pronunciation.BrE,
                         mp3: this.dict.pronunciation.AmEmp3,
                     }
+                } else {
+                    return {
+                        E: this.dict.pronunciation.BrE,
+                        mp3: this.dict.pronunciation.BrEmp3,
+                    }
                 }
             },
             compiledMarkdown () {
