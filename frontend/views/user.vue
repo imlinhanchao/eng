@@ -30,6 +30,7 @@
                         createUser: info.username
                     }"
                     :order="[
+                        'word'
                     ]"
                     tip="还没有创建任何笔记哦~"
                 ></notes-list>
