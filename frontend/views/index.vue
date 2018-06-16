@@ -112,17 +112,13 @@
 </style>
 <template>
     <Layout class="layout">
-        <Sider :class="'layout-sidebar'" default-collapsed breakpoint="xl" collapsible :collapsed-width="0" v-model="isCollapsed">
+        <Sider :class="'layout-sidebar'" default-collapsed breakpoint="xs" collapsible :collapsed-width="0" v-model="isCollapsed">
             <Header class="layout-user" v-if="isLogin">
                 <!-- <Icon type="person"></Icon> -->
                 <span>{{loginUser.nickname}}</span>
             </Header>
             <Menu :active-name="menuActive" theme="dark" width="auto" :class="menuitemClasses">
-                <MenuItem name="1-0" v-if="!isLogin">
-                    <span @click="loginModel = true"><Icon type="log-in"></Icon>
-                    <span>登录</span></span>
-                </MenuItem>
-                <MenuItem name="1-1" v-if="isLogin">
+                <MenuItem name="1-1">
                     <router-link to="/"><Icon type="ios-search-strong"></Icon>
                     <span>查询单词</span></router-link>
                 </MenuItem>
@@ -137,6 +133,10 @@
                 <MenuItem name="1-4" v-if="isLogin">
                     <span @click="logoutAccount"><Icon type="log-out"></Icon>
                     <span>退出</span></span>
+                </MenuItem>
+                <MenuItem name="1-0" v-if="!isLogin">
+                    <span @click="loginModel = true"><Icon type="log-in"></Icon>
+                    <span>登录</span></span>
                 </MenuItem>
             </Menu>
             <Footer class="layout-footer">
@@ -177,7 +177,7 @@
         <BackTop :style="{
             right: 'auto',
             top: '1em',
-            left: '50%'
+            left: 'calc(50% - 1em)'
         }"></BackTop>
     </Layout>
 </template>
@@ -238,9 +238,6 @@
         mounted () {
         },
         methods: {
-            newMeeting() {
-                this.$router.push(`/new`);
-            },
             logoutAccount() {
                 this.$store.dispatch('logout', (rsp, err) => {
                     if (!rsp || rsp.state != 0) {

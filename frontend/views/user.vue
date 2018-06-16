@@ -31,6 +31,7 @@
                     }"
                     :order="[
                     ]"
+                    tip="还没有创建任何笔记哦~"
                 ></notes-list>
             </TabPane>
             <TabPane label="我的收藏" name="star">
@@ -40,7 +41,7 @@
                     }"
                     :order="[
                     ]"
-                    tip="还没有收藏任何笔记哦~ 快快去查询单词收藏笔记吧！"
+                    tip="还没有收藏任何笔记哦~"
                 ></notes-list>
             </TabPane>
         </Tabs>
