@@ -13,7 +13,7 @@
     "dependencies": {
         "@xkeshi/vue-qrcode": "^0.3.0",
         "auto-loader": "^0.2.0",
-        "axios": "^0.15.3",
+        "axios": "^0.19.2",
         "body-parser": "~1.17.1",
         "clipboard": "^1.5.12",
         "cookie-parser": "~1.4.3",
