@@ -17,6 +17,7 @@ router.use(require('./access'));
 router.use('/eng', loader(modules.eng));
 router.use('/account', loader(modules.account));
 router.use('/notes', loader(modules.notes));
+router.use('/dict', loader(modules.dict));
 
 router.get('/', function (req, res) {
     res.render('index', { title: 'API' });

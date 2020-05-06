@@ -86,6 +86,9 @@ h2.sub-title {
     .sam-eng {
         font-weight: 400;
     }
+    .sam-ime {
+        font-size: 80%;
+    }
 }
 
 </style>
@@ -129,6 +132,7 @@ h2.sub-title {
                     <audio :src="sam.mp3Url" class="sound" :id="'sound' + (index + 1)"></audio>                    
                 </p>
                 <p class="sam-chn">{{sam.chn}}</p>
+                <p class="sam-ime">{{sam.ime}}</p>
             </section>
             <h2 class="sub-title" id="notes">笔记</h2>
             <notes 
@@ -174,31 +178,9 @@ h2.sub-title {
                 return (i - 70) % 80 + 1;
             },
             spell () {
-                if (this.dict.pronunciation.AmE && this.dict.pronunciation.AmEmp3) {
-                    return {
-                        E: this.dict.pronunciation.AmE,
-                        mp3: this.dict.pronunciation.AmEmp3,
-                    }
-                } else if (this.dict.pronunciation.BrE && this.dict.pronunciation.BrEmp3) {
-                    return {
-                        E: this.dict.pronunciation.BrE,
-                        mp3: this.dict.pronunciation.BrEmp3,
-                    }
-                } else if (this.dict.pronunciation.AmE && this.dict.pronunciation.BrEmp3) {
-                    return {
-                        E: this.dict.pronunciation.AmE,
-                        mp3: this.dict.pronunciation.BrEmp3,
-                    }
-                } else if (this.dict.pronunciation.BrE && this.dict.pronunciation.AmEmp3) {
-                    return {
-                        E: this.dict.pronunciation.BrE,
-                        mp3: this.dict.pronunciation.AmEmp3,
-                    }
-                } else {
-                    return {
-                        E: this.dict.pronunciation.BrE,
-                        mp3: this.dict.pronunciation.BrEmp3,
-                    }
+                return {
+                    E: this.dict.spell[0].pronunciation,
+                    mp3: this.dict.spell[0].mp3Url,
                 }
             },
             compiledMarkdown () {

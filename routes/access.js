@@ -8,7 +8,8 @@ router.all('/:interface/:fn*', function (req, res, next) {
     const no_login_interface = {
         eng: '*',
         notes: ['query'],
-        account: ['login', 'query']
+        account: ['login', 'query'],
+        dict: '*'
     };
 
     let account = new Account(req.session);

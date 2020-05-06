@@ -112,7 +112,7 @@
 </style>
 <template>
     <Layout class="layout">
-        <Sider :class="'layout-sidebar'" default-collapsed breakpoint="xs" collapsible :collapsed-width="0" v-model="isCollapsed">
+        <Sider :class="'layout-sidebar'" default-collapsed breakpoint="xl" collapsible :collapsed-width="0" v-model="isCollapsed">
             <Header class="layout-user" v-if="isLogin">
                 <!-- <Icon type="person"></Icon> -->
                 <span>{{loginUser.nickname}}</span>

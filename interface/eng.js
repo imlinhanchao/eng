@@ -1,6 +1,7 @@
 const req = require('../lib/req');
 const App = require('./app');
 const Words = require('./word');
+const Dict = require('./dict')
 
 let __error__ = Object.assign({}, App.error);
 __error__.notexisted = App.error.existed('单词', false);
@@ -45,7 +46,7 @@ class Module extends App {
                 }
                 if (index >= 0) break;
             }
-            let dict = await this.dict(word);
+            let dict = await Dict.get(word, true);
             if (!dict.word) throw this.error.notexisted;
             dict.isSelf = index >= 0;
             dict.index = index;
@@ -70,12 +71,6 @@ class Module extends App {
             }    
         }
         return this.okquery(tips);
-    }
-
-    async dict(word) {
-        let rsp = await req.get(`http://xtk.azurewebsites.net/BingDictService.aspx?Word=${word}`);
-        let data = JSON.parse(rsp.body);
-        return data;
     }
 }
 
