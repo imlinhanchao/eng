@@ -32,7 +32,7 @@
         "less-middleware": "~2.2.0",
         "lodash": "^4.17.10",
         "marked": "^0.4.0",
-        "morgan": "~1.8.1",
+        "morgan": "~1.10.0",
         "mysql2": "^1.5.3",
         "request": "^2.81.0",
         "request-promise": "^4.2.1",
