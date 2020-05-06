@@ -8,7 +8,7 @@
 .dict-tip {
     font-size: 1em;
     margin: 0 0 .5em;
-    background: #4fcefe;
+    background: #2196f3;
     padding: .2em .5em;
     color: #f8f8f9;
     font-weight: 400;
@@ -45,8 +45,8 @@
     &:focus {
         box-shadow: none;
     }
-    width: 2em;
-    height: 2em;
+    width: 1.5em;
+    height: 1.5em;
     padding: 0;
 }
 .def-list {
@@ -91,6 +91,24 @@ h2.sub-title {
     }
 }
 
+.spell {
+    display: inline-block;
+    .spell-type {
+        display: inline-block;
+        padding: 0 5px;
+        background-color: #fae050;
+    }
+    .spell-pronunciation {
+        display: inline-block;
+        padding: 0px 10px;
+        background: #000;
+        color: #FFF;
+        .sound-btn {
+            color: inherit;
+        }
+    }
+}
+
 </style>
 <template>
     <Layout class="home">
@@ -110,10 +128,13 @@ h2.sub-title {
                 <span class="dict-tip" v-if="!dict.isSelf" style="background:red">非自考词汇</span>
                 <span class="dict-tip" v-if="dict.isSelf">第{{page}}页 第{{index}}个</span>
             </section>
-            <p v-if="dict.pronunciation">
-                [{{spell.E}}]
-                <Button size="large" type="text" icon="volume-medium" @click="playSound(0)" class="sound-btn"></Button>
-                <audio :src="spell.mp3" class="sound" id="sound0"></audio>
+            <p v-if="spell" class="spell">
+                <span v-for="spell in dict.spells">
+                    <span class="spell-type">{{spell.type}}</span><span class="spell-pronunciation">[ {{spell.pronunciation}} ]
+                        <Button size="large" type="text" icon="volume-medium" @click="playSound(0)" class="sound-btn"></Button>    
+                    </span>
+                    <audio :src="spell.mp3Url" class="sound" id="sound0"></audio>
+                </span>
             </p>
             <h2 class="sub-title" id="wordmean">释义</h2>            
             <p>
@@ -178,9 +199,10 @@ h2.sub-title {
                 return (i - 70) % 80 + 1;
             },
             spell () {
+                if (this.dict.spells.length == 0) return null;
                 return {
-                    E: this.dict.spell[0].pronunciation,
-                    mp3: this.dict.spell[0].mp3Url,
+                    E: this.dict.spells[0].pronunciation,
+                    mp3: this.dict.spells[0].mp3Url,
                 }
             },
             compiledMarkdown () {
