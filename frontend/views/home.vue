@@ -53,7 +53,7 @@
     list-style: none;
     .def-type {
         display: inline-block;
-        background: #232425;
+        background: #FF5722;
         text-align: center;
         width: 3em;
         margin: 2px 0;
