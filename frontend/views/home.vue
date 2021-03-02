@@ -93,6 +93,10 @@ h2.sub-title {
 
 .spell {
     display: inline-block;
+    >span {
+        display: inline-block;
+        margin: 2px 5px;
+    }
     .spell-type {
         display: inline-block;
         padding: 0 5px;
