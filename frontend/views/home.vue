@@ -95,7 +95,7 @@ h2.sub-title {
     display: inline-block;
     >span {
         display: inline-block;
-        margin: 2px 5px;
+        margin: 2px 5px 0 0;
     }
     .spell-type {
         display: inline-block;
