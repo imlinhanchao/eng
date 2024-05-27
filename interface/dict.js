@@ -16,6 +16,9 @@ class Module extends App {
 
     static async get(word, onlyData=false) {
         let rsp = await req.get(`https://cn.bing.com/dict/search?q=${word}`, {
+            headers: {
+                'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'
+            },
             cookie: 'ENSEARCH=BENVER=1;'
         });
         if (!rsp) return null;
